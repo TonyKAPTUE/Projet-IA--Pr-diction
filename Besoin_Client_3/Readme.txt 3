@@ -1,0 +1,117 @@
+======================================================================
+                    README - Besoin Client 3
+             Prédiction de Trajectoire des Navires
+======================================================================
+
+Ce dossier contient les scripts et modèles nécessaires pour répondre au 
+Besoin Client 3 : prédire la trajectoire future d'un navire à des
+horizons de 5, 10 et 15 minutes.
+
+
+-----------------------------
+1. DESCRIPTION DES FICHIERS
+-----------------------------
+
+- `export_IA.csv`: 
+  Le jeu de données principal utilisé pour l'entraînement.
+
+- `train_trajectory_model.py`: 
+  Le script d'entraînement. Il lit les données, prépare les features, 
+  entraîne 6 modèles de régression (un pour chaque axe LAT/LON et chaque 
+  horizon de temps), puis sauvegarde ces modèles sur le disque. Il génère
+  également une carte de comparaison (`comparaison_trajectoire.html`).
+
+- `predict_trajectory.py`: 
+  Le script final de prédiction pour la démonstration. Il charge les modèles 
+  préalablement sauvegardés pour prédire la trajectoire d'un navire à partir 
+  de ses caractéristiques passées en ligne de commande.
+
+- `*.pkl`: 
+  Les fichiers générés par le script d'entraînement. Ce sont les modèles 
+  d'intelligence artificielle (`model_*.pkl`), la liste des colonnes du modèle 
+  (`regression_model_columns.pkl`) et le scaler si utilisé. Ils sont essentiels 
+  pour le script de prédiction.
+
+- `comparaison_trajectoire.html`:
+  Carte interactive générée par le script d'entraînement. Elle montre une
+  comparaison entre une trajectoire réelle et une trajectoire prédite pour
+  un navire du jeu de test. Utile pour l'analyse de performance.
+
+- `prediction_live_carte.html`: 
+  Carte interactive générée par le script de prédiction. Elle montre la 
+  trajectoire prédite pour les données que vous avez entrées en ligne de commande.
+
+
+-----------------------------
+2. PRÉREQUIS
+-----------------------------
+
+Ce projet a été développé avec Python 3.11. Pour exécuter les scripts, les 
+librairies suivantes sont nécessaires.
+
+Pour une installation facile, créez un fichier `requirements.txt` avec le contenu
+ci-dessous, puis exécutez `pip install -r requirements.txt` dans votre
+environnement virtuel activé.
+
+Contenu de `requirements.txt`:
+pandas
+scikit-learn
+joblib
+plotly
+matplotlib
+kaleido
+lightgbm
+xgboost
+
+
+-----------------------------
+3. INSTRUCTIONS D'UTILISATION
+-----------------------------
+
+Le workflow se déroule en deux étapes :
+
+**ÉTAPE A : Entraînement des modèles (à faire une seule fois)**
+
+Cette étape est nécessaire pour créer les fichiers `.pkl` que le script de 
+prédiction utilisera.
+
+1. Ouvrez un terminal et naviguez jusqu'au dossier de ce projet.
+2. (Optionnel mais recommandé) Activez votre environnement virtuel.
+   Exemple sur WSL/Debian : `source /chemin/vers/votre/venv/bin/activate`
+3. Lancez la commande suivante :
+   
+   python train_trajectory_model.py
+
+4. Attendez la fin de l'exécution. Le script affichera sa progression et 
+   confirmera la sauvegarde des fichiers `.pkl` et de la carte de comparaison.
+
+**ÉTAPE B : Lancer une prédiction (pour la démonstration)**
+
+Une fois les modèles créés, vous pouvez utiliser ce script pour faire des 
+prédictions en direct.
+
+1. Assurez-vous d'être dans le bon dossier dans votre terminal.
+2. Lancez le script en utilisant la commande `python predict_trajectory.py` 
+   suivie des arguments décrivant le navire.
+
+
+-----------------------------
+4. EXEMPLE DE COMMANDE
+-----------------------------
+
+Voici un exemple complet pour prédire la trajectoire d'un navire.
+
+python predict_trajectory.py --sog 12 --cog 100 --heading 99 --length 150 --width 25 --vesseltype 70 --start_lat 47.2 --start_lon -2.5
+
+
+-----------------------------
+5. DESCRIPTION DES SORTIES
+-----------------------------
+
+Après avoir lancé la commande de prédiction, vous obtiendrez :
+
+1. **Dans le Terminal :** L'affichage des coordonnées prédites pour les 
+   horizons T+5, T+10 et T+15 minutes.
+
+2. **Un Fichier généré :** Un fichier nommé `prediction_trajectoire_plot.png` sera créé. 
+   Ouvrez-le avec un navigateur web pour visualiser la trajectoire prédite.
